@@ -35,8 +35,11 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: actions-to-ecr
-          IMAGE_TAG: ${{ github.sha }}
+          SHORT_SHA: ${{ github.sha }}
         run: |
+          SHORT_SHA=${{ github.sha.substr(0, 6) }}
+          echo "Short SHA: $SHORT_SHA"
+
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
