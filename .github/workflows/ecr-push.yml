@@ -43,7 +43,7 @@ jobs:
       # Create a new ECS task definition
       - name: Register ECS task definition
         id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v2
+        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
         with:
           task-definition: ./task-def.json  # Correct path to task definition file
           container-name: new
@@ -51,7 +51,7 @@ jobs:
 
       # Deploy the ECS service
       - name: Deploy to ECS service
-        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           cluster: my-cluster
           service: my-cluster
