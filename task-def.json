@@ -1,0 +1,40 @@
+{
+  "family": "actions",
+  "networkMode": "awsvpc",
+  "executionRoleArn": "arn:aws:iam::905418099027:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::905418099027:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "new",
+      "image": "905418099027.dkr.ecr.us-east-1.amazonaws.com/actions-to-ecr:latest",
+      "cpu": 1024,
+      "memory": 3072,
+      "memoryReservation": 1024,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/actions",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ],
+  "cpu": "1024",
+  "memory": "3072",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  }
+}
