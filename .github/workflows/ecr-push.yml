@@ -14,49 +14,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
-      - name: Checkout repo
+      # Step 1: Checkout the code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Configure AWS credentials
+      # Step 2: Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::905418099027:role/ecr-role
           aws-region: us-east-1
 
-      # Log in to Amazon ECR
+      # Step 3: Log in to Amazon ECR
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # Build, tag, and push the Docker image
-      - name: Build, tag, and push Docker image
+      # Step 4: Build, tag, and push the Docker image
+      - name: Build, tag, and push Docker image to ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: actions-to-ecr
           SHORT_SHA: ${{ github.sha }}
         run: |
-          SHORT_SHA=${{ github.sha.substr(0, 6) }}
-          echo "Short SHA: $SHORT_SHA"
+          IMAGE_TAG=${SHORT_SHA::6}
+          echo "Image Tag: $IMAGE_TAG"
 
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
-      # Create a new ECS task definition
-      - name: Register ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
-        with:
-          task-definition: ./task-def.json  # Correct path to task definition file
-          container-name: new
-          image: ${{ steps.login-ecr.outputs.registry }}/actions-to-ecr:${{ github.sha }}
-
-      # Deploy the ECS service
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
-        with:
-          cluster: my-cluster
-          service: my-cluster
-          task-definition: ${{ steps.task-def.outputs.task-definition-arn }}
-          wait-for-service-stability: true
