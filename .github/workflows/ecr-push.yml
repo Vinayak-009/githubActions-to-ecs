@@ -45,7 +45,7 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v2
         with:
-          task-definition: task-def.json  # Replace this with your task definition file name
+          task-definition: ./task-def.json  # Correct path to task definition file
           container-name: new
           image: ${{ steps.login-ecr.outputs.registry }}/actions-to-ecr:${{ github.sha }}
 
