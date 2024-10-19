@@ -1,10 +1,12 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:905418099027:task-definition/gaurav-task:1",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:905418099027:task-definition/flaskapp-task-defination:1",
     "containerDefinitions": [
         {
-            "name": "new",
+            "name": "flaskapp",
             "image": "905418099027.dkr.ecr.us-east-1.amazonaws.com/actions-to-ecr",
-            "cpu": 0,
+            "cpu": 1024,
+            "memory": 3072,
+            "memoryReservation": 1024,
             "portMappings": [
                 {
                     "name": "cport",
@@ -23,7 +25,7 @@
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
-                    "awslogs-group": "/ecs/gaurav-task",
+                    "awslogs-group": "/ecs/flaskapp-task-defination",
                     "mode": "non-blocking",
                     "awslogs-create-group": "true",
                     "max-buffer-size": "25m",
@@ -44,7 +46,7 @@
             "systemControls": []
         }
     ],
-    "family": "gaurav-task",
+    "family": "flaskapp-task-defination",
     "taskRoleArn": "arn:aws:iam::905418099027:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::905418099027:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
@@ -60,6 +62,9 @@
         },
         {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
         },
         {
             "name": "com.amazonaws.ecs.capability.task-iam-role"
@@ -87,6 +92,9 @@
         },
         {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "ecs.capability.extensible-ephemeral-storage"
         }
     ],
     "placementConstraints": [],
@@ -99,11 +107,14 @@
     ],
     "cpu": "1024",
     "memory": "3072",
+    "ephemeralStorage": {
+        "sizeInGiB": 21
+    },
     "runtimePlatform": {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-10-18T16:06:41.250Z",
+    "registeredAt": "2024-10-19T13:37:34.074Z",
     "registeredBy": "arn:aws:iam::905418099027:root",
     "tags": []
 }
