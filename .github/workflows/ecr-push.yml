@@ -9,6 +9,14 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  AWS_REGION: us-east-1                        # Set your AWS region
+  ECR_REPOSITORY: actions-to-ecr               # Set your ECR repository name
+  ECS_SERVICE: gaurav-service                  # Set your ECS service name
+  ECS_CLUSTER: gaurav-cluster                  # Set your ECS cluster name
+  ECS_TASK_DEFINITION: ./task-def.json         # Path to your task definition file
+  CONTAINER_NAME: new                          # Name of the container in your task definition
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -23,7 +31,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::905418099027:role/ecr-role
-          aws-region: us-east-1
+          aws-region: ${{ env.AWS_REGION }}
 
       # Step 3: Log in to Amazon ECR
       - name: Login to Amazon ECR
@@ -34,7 +42,7 @@ jobs:
       - name: Build, tag, and push Docker image to ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: actions-to-ecr
+          REPOSITORY: ${{ env.ECR_REPOSITORY }}
           SHORT_SHA: ${{ github.sha }}
         run: |
           IMAGE_TAG=${SHORT_SHA::6}
@@ -42,3 +50,21 @@ jobs:
 
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      # Step 5: Fill in the new image ID in the Amazon ECS task definition
+      - name: Update ECS task definition with new image
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.login-ecr.outputs.registry }}/actions-to-ecr:${{ env.SHORT_SHA::6 }}
+
+      # Step 6: Deploy the updated ECS task definition
+      - name: Deploy ECS service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+        with:
+          cluster: ${{ env.ECS_CLUSTER }}
+          service: ${{ env.ECS_SERVICE }}
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          wait-for-service-stability: true
