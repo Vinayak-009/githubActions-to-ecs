@@ -12,10 +12,10 @@ permissions:
 env:
   AWS_REGION: us-east-1                        # Set your AWS region
   ECR_REPOSITORY: actions-to-ecr               # Set your ECR repository name
-  ECS_SERVICE: vinayak-service                  # Set your ECS service name
-  ECS_CLUSTER: gaurav-cluster                  # Set your ECS cluster name
+  ECS_SERVICE: flask-app-service                  # Set your ECS service name
+  ECS_CLUSTER: flask-demo-cluster                  # Set your ECS cluster name
   ECS_TASK_DEFINITION: ./task-def.json         # Path to your task definition file
-  CONTAINER_NAME: new                          # Name of the container in your task definition
+  CONTAINER_NAME: flaskapp                          # Name of the container in your task definition
 
 jobs:
   build-and-deploy:
