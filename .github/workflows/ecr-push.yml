@@ -58,7 +58,7 @@ jobs:
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.login-ecr.outputs.registry }}/actions-to-ecr:${{ env.SHORT_SHA::6 }}
+          image: ${{ steps.login-ecr.outputs.registry }}/actions-to-ecr:${{ github.sha::6 }}
 
       # Step 6: Deploy the updated ECS task definition
       - name: Deploy ECS service
