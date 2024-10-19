@@ -1,41 +1,109 @@
 {
-    "family": "actions",
-    "networkMode": "awsvpc",
-    "executionRoleArn": "arn:aws:iam::905418099027:role/ecsTaskExecutionRole",
-    "taskRoleArn": "arn:aws:iam::905418099027:role/ecsTaskExecutionRole",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:905418099027:task-definition/gaurav-task:1",
     "containerDefinitions": [
-      {
-        "name": "new",
-        "image": "905418099027.dkr.ecr.us-east-1.amazonaws.com/actions-to-ecr:latest",
-        "cpu": 1024,
-        "memory": 3072,
-        "memoryReservation": 1024,
-        "portMappings": [
-          {
-            "containerPort": 8080,
-            "hostPort": 8080,
-            "protocol": "tcp"
-          }
-        ],
-        "essential": true,
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "options": {
-            "awslogs-group": "/ecs/actions",
-            "awslogs-region": "us-east-1",
-            "awslogs-stream-prefix": "ecs"
-          }
+        {
+            "name": "new",
+            "image": "905418099027.dkr.ecr.us-east-1.amazonaws.com/actions-to-ecr",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "cport",
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/gaurav-task",
+                    "mode": "non-blocking",
+                    "awslogs-create-group": "true",
+                    "max-buffer-size": "25m",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "healthCheck": {
+                "command": [
+                    "\"CMD-SHELL\"",
+                    "\"curl -f http://localhost:8080/health || exit 1\""
+                ],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 3
+            },
+            "systemControls": []
         }
-      }
+    ],
+    "family": "gaurav-task",
+    "taskRoleArn": "arn:aws:iam::905418099027:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::905418099027:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 1,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.container-health-check"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.24"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
     ],
     "cpu": "1024",
     "memory": "3072",
-    "requiresCompatibilities": [
-      "FARGATE"
-    ],
     "runtimePlatform": {
-      "cpuArchitecture": "X86_64",
-      "operatingSystemFamily": "LINUX"
-    }
-  }
-  
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-10-18T16:06:41.250Z",
+    "registeredBy": "arn:aws:iam::905418099027:root",
+    "tags": []
+}
