@@ -49,8 +49,9 @@ jobs:
           echo "Image Tag: $IMAGE_TAG"
           echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
 
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:latest
 
       # Step 5: Fill in the new image ID in the Amazon ECS task definition
       - name: Update ECS task definition with new image
