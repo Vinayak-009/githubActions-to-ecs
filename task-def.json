@@ -37,7 +37,7 @@
             "healthCheck": {
                 "command": [
                     "CMD-SHELL",
-        "curl -f http://new-lb-1205551716.us-east-1.elb.amazonaws.com/health || exit 1"
+        "curl -f http://localhost:8080/health || exit 1"
                 ],
                 "interval": 30,
                 "timeout": 5,
