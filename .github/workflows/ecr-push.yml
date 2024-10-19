@@ -43,10 +43,11 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ env.ECR_REPOSITORY }}
-          SHORT_SHA: ${{ github.sha }}
         run: |
-          IMAGE_TAG=${SHORT_SHA::6}
+          SHORT_SHA=${GITHUB_SHA::6}
+          IMAGE_TAG=$SHORT_SHA
           echo "Image Tag: $IMAGE_TAG"
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
 
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
@@ -58,7 +59,7 @@ jobs:
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.login-ecr.outputs.registry }}/actions-to-ecr:$IMAGE_TAG
+          image: ${{ steps.login-ecr.outputs.registry }}/actions-to-ecr:${{ env.SHORT_SHA }}
 
       # Step 6: Deploy the updated ECS task definition
       - name: Deploy ECS service
